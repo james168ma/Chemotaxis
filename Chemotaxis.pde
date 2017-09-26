@@ -1,11 +1,9 @@
-Prey[] preyColony;
+Prey[] preyColony = new Prey[300];
 Predator[] predators = new Predator[10];
-int predIndex = 0;
 void setup() {
   size(1000, 700);
   frameRate(60);
   background(0);
-  preyColony = new Prey[200];
   for (int i = 0; i < preyColony.length; i++) 
     preyColony[i] = new Prey();
   for (int i = 0; i < predators.length; i++) 
@@ -16,27 +14,36 @@ void draw() {
   fill(0, 0, 0, 30);
   noStroke();
   rect(0, 0, 1000, 700);
-  for(int i = 0; i < preyColony.length; i++)
-  {
-    preyColony[i].show();
-    preyColony[i].move();
-  }
-  for(int i = 0; i < predators.length; i++)
-  {
+  for(int i = 0; i < predators.length; i++) {
     predators[i].show();
     predators[i].move();
   }
-  
+  for(int i = 0; i < preyColony.length; i++) {
+    preyColony[i].show();
+    preyColony[i].move();
+    if(preyColony[i].signal == true) {  //FOR PACMAN TO SHOW UP
+      noStroke();
+      fill(238, 255, 54);
+      arc(preyColony[i].myX, preyColony[i].myY, 50, 50, PI/4, 7*PI/4);
+      preyColony[i].signal = false;
+    }   
+  }
 }
-class Prey {
+
+void mouseClicked() {  //TO RESPAWN GREEN CIRCLES
+  for(int i = 0; i < preyColony.length; i++) 
+    preyColony[i].dead = false;
+}
+
+class Prey {  //GREEN CIRCLES
   int myX, myY, step;
-  boolean dead;
+  boolean dead, signal;
 
   Prey() {
     myX = (int)(Math.random()*50)*20;
     myY = (int)(Math.random()*35)*20;
     step = 1;
-    dead = false;
+    dead = signal = false;
   }
 
   void move() {
@@ -59,9 +66,10 @@ class Prey {
   }
 
   void show() {
-    if(get(myX, myY) != color(0))
+    if((get(myX, myY) == color(255, 0, 0))&&(dead == false))
     {
       dead = true;
+      signal = true;
     }
     if(dead == false) {
       stroke(0, 255, 0);
@@ -72,7 +80,7 @@ class Prey {
   }
 }
 
-class Predator {
+class Predator {  //RED CIRCLES
   int myX, myY, step;
 
   Predator() {
