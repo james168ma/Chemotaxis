@@ -1,5 +1,5 @@
 Prey[] preyColony = new Prey[100];
-Predator[] predators = new Predator[5];
+Predator[] predators = new Predator[10];
 void setup() {
   size(1000, 700);
   frameRate(60);
@@ -17,6 +17,16 @@ void draw() {
   for(int i = 0; i < predators.length; i++) {
     predators[i].show();
     predators[i].move();
+    if(predators[i].signal == true) {
+      background(0, 255, 0);  //FOR CROSSHAIRS
+      fill(255);
+      noStroke();
+      rect(predators[i].myX - 1, predators[i].myY - 40, 3, 15);
+      rect(predators[i].myX - 1, predators[i].myY + 25, 3, 15);
+      rect(predators[i].myX - 40, predators[i].myY - 1, 15, 3);
+      rect(predators[i].myX + 25, predators[i].myY - 1, 15, 3);
+      predators[i].signal = false;
+    }
   }
   for(int i = 0; i < preyColony.length; i++) {
     preyColony[i].show();
@@ -34,7 +44,7 @@ void draw() {
       for(int y = 0; y < 701; y += 20) {
         ellipse(preyColony[i].myX, y, 10, 10);
       }*/
-      background(245, 0, 0);
+      background(245, 0, 0);  //FOR CROSSHAIRS
       fill(255);
       noStroke();
       rect(preyColony[i].myX - 1, preyColony[i].myY - 40, 3, 15);
@@ -46,12 +56,14 @@ void draw() {
   }
 }
 
-void mouseClicked() {  //TO RESPAWN GREEN CIRCLES
-  for(int i = 0; i < preyColony.length; i++) 
+void keyPressed() {  
+  for(int i = 0; i < preyColony.length; i++) //TO RESPAWN COLORFUL CIRCLES
     preyColony[i].dead = false;
+  for(int i = 0; i < predators.length; i++) //TO RESPAWN RED CIRCLES
+    predators[i].dead = false;
 }
 
-class Prey {  //GREEN CIRCLES
+class Prey {  //COLORFUL CIRCLES
   int myX, myY, step, myR, myG, myB;
   boolean dead, signal;
 
@@ -86,10 +98,7 @@ class Prey {  //GREEN CIRCLES
 
   void show() {
     if((get(myX, myY) == color(255, 0, 0))&&(dead == false))
-    {
-      dead = true;
-      signal = true;
-    }
+      dead = signal = true;
     if(dead == false) {
       stroke(myR, myG, myB);
       strokeWeight(3);
@@ -101,11 +110,13 @@ class Prey {  //GREEN CIRCLES
 
 class Predator {  //RED CIRCLES
   int myX, myY, step;
+  boolean dead, signal;
 
   Predator() {
     myX = (int)(Math.random()*50)*20;
     myY = (int)(Math.random()*35)*20;
     step = 1;
+    dead = signal = false;
   }
 
   void move() {
@@ -128,8 +139,12 @@ class Predator {  //RED CIRCLES
   }
 
   void show() {
-    noStroke();
-    fill(255, 0, 0);
-    ellipse(myX, myY, 13, 13);
+    if((mousePressed == true)&&(((mouseX >= myX - 13)&&(mouseX <= myX + 13))&&((mouseY >= myY - 13)&&(mouseY <= myY +13)))&&(dead == false))
+      dead = signal = true;
+    if(dead == false) {
+      noStroke();
+      fill(255, 0, 0);
+      ellipse(myX, myY, 13, 13);
+    }
   }
 }
