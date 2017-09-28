@@ -1,5 +1,8 @@
-Prey[] preyColony = new Prey[100];
-Predator[] predators = new Predator[10];
+Prey[] preyColony = new Prey[15];
+Predator[] predators = new Predator[15];
+int playerKillCount = 0;
+int deathTotal = 0;
+boolean gameOver = false;
 void setup() {
   size(1000, 700);
   frameRate(60);
@@ -18,13 +21,14 @@ void draw() {
     predators[i].show();
     predators[i].move();
     if(predators[i].signal == true) {
-      background(0, 255, 0);  //FOR CROSSHAIRS
+      background(0, 255, 0);//FOR CROSSHAIRS
       fill(255);
       noStroke();
       rect(predators[i].myX - 1, predators[i].myY - 40, 3, 15);
       rect(predators[i].myX - 1, predators[i].myY + 25, 3, 15);
       rect(predators[i].myX - 40, predators[i].myY - 1, 15, 3);
       rect(predators[i].myX + 25, predators[i].myY - 1, 15, 3);
+      playerKillCount ++;
       predators[i].signal = false;
     }
   }
@@ -51,9 +55,33 @@ void draw() {
       rect(preyColony[i].myX - 1, preyColony[i].myY + 25, 3, 15);
       rect(preyColony[i].myX - 40, preyColony[i].myY - 1, 15, 3);
       rect(preyColony[i].myX + 25, preyColony[i].myY - 1, 15, 3);
+      deathTotal ++;
       preyColony[i].signal = false;
     }   
   }
+  if(mousePressed == true) {
+      fill(255);
+      noStroke();
+      rect(mouseX - 1, mouseY - 40, 3, 15);
+      rect(mouseX - 1, mouseY + 25, 3, 15);
+      rect(mouseX - 40, mouseY - 1, 15, 3);
+      rect(mouseX + 25, mouseY - 1, 15, 3);
+      ellipse(mouseX, mouseY, 2, 2);
+   } else {
+      fill(255);
+      noStroke();
+      rect(mouseX - 1, mouseY - 30, 3, 15);
+      rect(mouseX - 1, mouseY + 15, 3, 15);
+      rect(mouseX - 30, mouseY - 1, 15, 3);
+      rect(mouseX + 15, mouseY - 1, 15, 3);
+   }
+   if(deathTotal == preyColony.length) {
+     gameOver = true;
+     textSize(30);
+     text("GAME OVER", 400, 330);
+   }
+   textSize(12);
+   text("kill count: " + playerKillCount, 900, 670);
 }
 
 void keyPressed() {  
@@ -61,6 +89,8 @@ void keyPressed() {
     preyColony[i].dead = false;
   for(int i = 0; i < predators.length; i++) //TO RESPAWN RED CIRCLES
     predators[i].dead = false;
+  deathTotal = 0;
+  playerKillCount = 0;
 }
 
 class Prey {  //COLORFUL CIRCLES
@@ -139,7 +169,7 @@ class Predator {  //RED CIRCLES
   }
 
   void show() {
-    if((mousePressed == true)&&(((mouseX >= myX - 13)&&(mouseX <= myX + 13))&&((mouseY >= myY - 13)&&(mouseY <= myY +13)))&&(dead == false))
+    if((mousePressed == true)&&(((mouseX >= myX - 13)&&(mouseX <= myX + 13))&&((mouseY >= myY - 13)&&(mouseY <= myY +13)))&&(dead == false)&&(gameOver == false))
       dead = signal = true;
     if(dead == false) {
       noStroke();
