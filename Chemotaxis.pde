@@ -1,5 +1,5 @@
 Prey[] preyColony = new Prey[100];
-Predator[] predators = new Predator[18];
+Predator[] predators = new Predator[36];
 int playerKillCount = 0;
 int deathTotal = 0;
 int diffIndex = 1;
@@ -39,7 +39,7 @@ void draw() {
     preyColony[i].show();
     preyColony[i].move();
     if(preyColony[i].signal == true) {
-      background(245, 0, 0);  //FOR CROSSHAIRS
+      background(205, 0, 0);  //FOR CROSSHAIRS
       fill(255);
       noStroke();
       rect(preyColony[i].myX - 1, preyColony[i].myY - 40, 3, 15);
