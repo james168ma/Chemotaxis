@@ -1,8 +1,9 @@
-Prey[] preyColony = new Prey[15];
+Prey[] preyColony = new Prey[100];
 Predator[] predators = new Predator[15];
 int playerKillCount = 0;
 int deathTotal = 0;
-boolean gameOver = false;
+int diffIndex = 1;
+boolean startScreen = true, gameOver = true;
 void setup() {
   size(1000, 700);
   frameRate(60);
@@ -17,37 +18,27 @@ void draw() {
   fill(0, 0, 0, 30);
   noStroke();
   rect(0, 0, 1000, 700);
-  for(int i = 0; i < predators.length; i++) {
-    predators[i].show();
-    predators[i].move();
-    if(predators[i].signal == true) {
-      background(0, 255, 0);//FOR CROSSHAIRS
-      fill(255);
-      noStroke();
-      rect(predators[i].myX - 1, predators[i].myY - 40, 3, 15);
-      rect(predators[i].myX - 1, predators[i].myY + 25, 3, 15);
-      rect(predators[i].myX - 40, predators[i].myY - 1, 15, 3);
-      rect(predators[i].myX + 25, predators[i].myY - 1, 15, 3);
-      playerKillCount ++;
-      predators[i].signal = false;
+  if(gameOver == false) {   //SHOWING PREDATORS
+    for(int i = 0; i < predators.length/diffIndex; i++) {
+      predators[i].show();
+      predators[i].move();
+      if(predators[i].signal == true) {
+        background(0, 255, 0);//FOR CROSSHAIRS
+        fill(255);
+        noStroke();
+        rect(predators[i].myX - 1, predators[i].myY - 40, 3, 15);
+        rect(predators[i].myX - 1, predators[i].myY + 25, 3, 15);
+        rect(predators[i].myX - 40, predators[i].myY - 1, 15, 3);
+        rect(predators[i].myX + 25, predators[i].myY - 1, 15, 3);
+        playerKillCount ++;
+        predators[i].signal = false;
+      }
     }
   }
-  for(int i = 0; i < preyColony.length; i++) {
+  for(int i = 0; i < preyColony.length; i++) {   //SHOWING PREY
     preyColony[i].show();
     preyColony[i].move();
     if(preyColony[i].signal == true) {
-      /*noStroke();                  //FOR PACMAN TO SHOW UP
-      fill(238, 255, 54);
-      arc(preyColony[i].myX, preyColony[i].myY, 50, 50, PI/4, 7*PI/4);*/
-      /*fill(255, 0, 0);             //FOR EXPLOSION
-      ellipse(preyColony[i].myX, preyColony[i].myY, 50, 50);
-      for(int x = 0; x < 1001; x += 20) {
-        fill(preyColony[i].myR, preyColony[i].myG, preyColony[i].myB);
-        ellipse(x, preyColony[i].myY, 10, 10);
-      }
-      for(int y = 0; y < 701; y += 20) {
-        ellipse(preyColony[i].myX, y, 10, 10);
-      }*/
       background(245, 0, 0);  //FOR CROSSHAIRS
       fill(255);
       noStroke();
@@ -59,7 +50,57 @@ void draw() {
       preyColony[i].signal = false;
     }   
   }
-  if(mousePressed == true) {
+  if(startScreen == true) {//STARTING SCREEN
+    textSize(30);
+    fill(255);
+    text("CLICK TO CHOOSE DIFFICULTY", 275, 200);
+    if((mouseX <= 325 && mouseX >= 275)&&(mouseY <= 300 && mouseY >= 250))
+      textSize(45);
+    else
+      textSize(30);
+    text("EZ", 275, 300);
+    if((mouseX <= 535 && mouseX >= 475)&&(mouseY <= 300 && mouseY >= 250))
+      textSize(45);
+    else
+      textSize(30);
+    text("MED", 475, 300);
+    if((mouseX <= 725 && mouseX >= 675)&&(mouseY <= 300 && mouseY >= 250))
+      textSize(45);
+    else
+      textSize(30);
+    text("KYS", 675, 300);
+      if((mouseX <= 325 && mouseX >= 275)&&(mouseY <= 300 && mouseY >= 250)&&(mousePressed == true)) {
+        diffIndex = 3;
+        for(int i = 0; i < preyColony.length; i++) //TO RESPAWN COLORFUL CIRCLES
+          preyColony[i].dead = false;
+        for(int i = 0; i < predators.length/diffIndex; i++) //TO RESPAWN RED CIRCLES
+          predators[i].dead = false;
+        deathTotal = 0;
+        playerKillCount = 0;
+        gameOver = startScreen = false;
+      }
+      if((mouseX <= 535 && mouseX >= 475)&&(mouseY <= 300 && mouseY >= 250)&&(mousePressed == true)) {
+        diffIndex = 2;
+        for(int i = 0; i < preyColony.length; i++) //TO RESPAWN COLORFUL CIRCLES
+          preyColony[i].dead = false;
+        for(int i = 0; i < predators.length/diffIndex; i++) //TO RESPAWN RED CIRCLES
+          predators[i].dead = false;
+        deathTotal = 0;
+        playerKillCount = 0;
+        gameOver = startScreen = false;
+      }
+      if((mouseX <= 735 && mouseX >= 675)&&(mouseY <= 300 && mouseY >= 250)&&(mousePressed == true)) {
+        diffIndex = 1;
+        for(int i = 0; i < preyColony.length; i++) //TO RESPAWN COLORFUL CIRCLES
+          preyColony[i].dead = false;
+        for(int i = 0; i < predators.length/diffIndex; i++) //TO RESPAWN RED CIRCLES
+          predators[i].dead = false;
+        deathTotal = 0;
+        playerKillCount = 0;
+        gameOver = startScreen = false;
+      }
+  }
+  if(mousePressed == true) { //PLAYER'S CROSSHAIRS
       fill(255);
       noStroke();
       rect(mouseX - 1, mouseY - 40, 3, 15);
@@ -76,21 +117,23 @@ void draw() {
       rect(mouseX + 15, mouseY - 1, 15, 3);
    }
    if(deathTotal == preyColony.length) {
+     startScreen = true;
      gameOver = true;
      textSize(30);
-     text("GAME OVER", 400, 330);
+     text("GAME OVER", 400, 430);
+     textSize(12);
+     //text("Press any key to play again", 405, 450);
+   }
+   if(playerKillCount == predators.length/diffIndex) {
+     startScreen = true;
+     gameOver = true;
+     textSize(30);
+     text("YOU WIN", 430, 430);
+     textSize(12);
+     //text("Press any key to play again", 420, 450);
    }
    textSize(12);
    text("kill count: " + playerKillCount, 900, 670);
-}
-
-void keyPressed() {  
-  for(int i = 0; i < preyColony.length; i++) //TO RESPAWN COLORFUL CIRCLES
-    preyColony[i].dead = false;
-  for(int i = 0; i < predators.length; i++) //TO RESPAWN RED CIRCLES
-    predators[i].dead = false;
-  deathTotal = 0;
-  playerKillCount = 0;
 }
 
 class Prey {  //COLORFUL CIRCLES
