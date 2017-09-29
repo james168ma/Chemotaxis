@@ -1,5 +1,5 @@
 Prey[] preyColony = new Prey[100];
-Predator[] predators = new Predator[15];
+Predator[] predators = new Predator[18];
 int playerKillCount = 0;
 int deathTotal = 0;
 int diffIndex = 1;
